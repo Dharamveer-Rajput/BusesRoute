@@ -3,7 +3,7 @@
     <string name="enterotp">Add Route</string>
     <string name="createstop">Create Stop</string>
     <string name="addarute">Add Route</string>
-    <string name="nameofrute">Name of Route</string>
+    <string name="nameofrute">Enter the Name of Route</string>
     <string name="ok">OK</string>
     <string name="googlemapskey">AIzaSyB1IRsv7giP2gq87c4Ct7kK6WFDyD6m16M</string>
     <string name="title_location_permission">Allow</string>

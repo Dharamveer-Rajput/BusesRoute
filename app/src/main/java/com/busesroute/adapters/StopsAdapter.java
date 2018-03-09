@@ -1,4 +1,4 @@
-package com.busesroute;
+package com.busesroute.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -7,11 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.busesroute.R;
 import com.busesroute.response.StopsSuccess.StopsSuccess;
-import com.busesroute.response.routes.RoutesSuccess;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by dharamveer on 8/3/18.
@@ -26,7 +25,6 @@ public class StopsAdapter extends RecyclerView.Adapter<StopsAdapter.MyHolder>  {
     public ArrayList<StopsSuccess> stopsSuccessArrayList;
     Context mContext;
 
-    public RoutesAdapter.RowClickListener rowClickListener;
 
     public StopsAdapter(ArrayList<StopsSuccess> stopsSuccessArrayList, Context mContext) {
         this.stopsSuccessArrayList = stopsSuccessArrayList;
@@ -47,7 +45,7 @@ public class StopsAdapter extends RecyclerView.Adapter<StopsAdapter.MyHolder>  {
 
         final StopsSuccess stopsSuccess = stopsSuccessArrayList.get(position);
 
-        holder.txtIdStops.setText(String.valueOf(stopsSuccess.getIdStops()));
+        holder.txtIdStops.setText(String.valueOf(stopsSuccess.getIdStopsToShow()));
         holder.txtTitle.setText(stopsSuccess.getStopsTitle());
         holder.txtLatStops.setText(stopsSuccess.getStopsLat());
         holder.txtLngStops.setText(stopsSuccess.getStopsLng());

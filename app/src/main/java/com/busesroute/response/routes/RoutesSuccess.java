@@ -13,6 +13,17 @@ public class RoutesSuccess {
    int id;
    String routeName;
 
+    public String getColorCode() {
+        return colorCode;
+    }
+
+    public void setColorCode(String colorCode) {
+        this.colorCode = colorCode;
+    }
+
+    String colorCode;
+
+
     public int getId() {
         return id;
     }

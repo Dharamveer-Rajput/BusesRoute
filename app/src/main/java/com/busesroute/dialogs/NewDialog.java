@@ -1,4 +1,4 @@
-package com.busesroute.Dialogs;
+package com.busesroute.dialogs;
 
 import android.Manifest;
 import android.app.Dialog;
@@ -16,10 +16,6 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.busesroute.R;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import pl.charmas.android.reactivelocation2.ReactiveLocationProvider;
 

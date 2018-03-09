@@ -11,6 +11,8 @@
 
 
 
+
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -23,7 +25,7 @@
                 android:id="@+id/tvPleaseEnter"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/addarute"
+                android:text="Enter Route Name"
                 android:textColor="@color/black"
                 android:padding="@dimen/_10sdp"
                 android:textStyle="bold"
@@ -34,13 +36,12 @@
 
 
             <EditText
-                android:layout_below="@+id/tvPleaseEnter"
-                android:id="@+id/edStopTitleMap"
+                android:id="@+id/edNewRouteName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/_13sdp"
                 android:inputType="text"
-                android:hint="@string/nameofrute"
+                android:hint="Route Name"
                 android:padding="@dimen/_8sdp"
                 android:gravity="center"
                 android:layout_centerHorizontal="true"
@@ -49,6 +50,7 @@
                 android:textColor="@color/black"
                 android:background="@drawable/edbg_dialog"
                 />
+
 
 
 
@@ -72,7 +74,7 @@
 
 
                 <Button
-                    android:id="@+id/btnColoraddroutes"
+                    android:id="@+id/btnEditColorPicker"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:gravity="center"
@@ -86,6 +88,7 @@
 
 
         </LinearLayout>
+
 
 
 

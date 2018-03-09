@@ -10,6 +10,16 @@ public class StopsSuccess {
 
 
     private int idStops;
+
+    public int getIdStopsToShow() {
+        return idStopsToShow;
+    }
+
+    public void setIdStopsToShow(int idStopsToShow) {
+        this.idStopsToShow = idStopsToShow;
+    }
+
+    private int idStopsToShow;
     private String stopsTitle, stopsLat, stopsLng;
 
     public int getIdStops() {

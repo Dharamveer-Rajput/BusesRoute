@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".MainActivity">
+    tools:context=".activities.MainActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -24,15 +24,36 @@
         android:layout_height="?attr/actionBarSize"
         app:popupTheme="@style/AppTheme.PopupOverlay" >
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:textColor="@color/white"
-            android:layout_gravity="center"
-            android:id="@+id/toolbar_title"
-            />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:layout_centerInParent="true"
+                android:textColor="@color/white"
+                android:layout_gravity="center"
+                android:id="@+id/toolbar_title"
+                />
+
+
+            <TextView
+                android:id="@+id/txtwebViewActivity"
+                android:text="Preview"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:padding="@dimen/_15sdp"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_13sdp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/marker"/>
+
+
+        </RelativeLayout>
+
+
 
 
     </android.support.v7.widget.Toolbar>
@@ -56,6 +77,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        android:src="@android:drawable/ic_input_add" />
+        android:src="@drawable/pluswhite" />
 
 </android.support.design.widget.CoordinatorLayout>

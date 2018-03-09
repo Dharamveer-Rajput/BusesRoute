@@ -1,8 +1,7 @@
-package com.busesroute.Dialogs;
+package com.busesroute.dialogs;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -20,8 +19,6 @@ import com.busesroute.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import butterknife.ButterKnife;
 
 /**
  * Created by dharamveer on 8/3/18.

@@ -1,4 +1,4 @@
-package com.busesroute;
+package com.busesroute.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -6,8 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.busesroute.R;
 import com.busesroute.response.routes.RoutesSuccess;
 
 import java.util.List;
@@ -21,7 +24,7 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.MyHolder> 
     private List<RoutesSuccess> routesSuccessList;
     Context mContext;
     LayoutInflater mInflater;
-    public RowClickListener rowClickListener;
+   // public RowClickListener rowClickListener;
 
 
     public RoutesAdapter(List<RoutesSuccess> routesSuccessList, Context mContext) {
@@ -30,16 +33,24 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.MyHolder> 
     }
 
 
-    public interface RowClickListener{
+ /*   public interface RowClickListener{
 
         void onClick(int position,int routeId);
 
     }
 
+
+
+    public interface OnLngClickListener{
+        void onLongClick(int position);
+
+    }
     public void setOnItemClickListener(RowClickListener rowClickListener) {
         this.rowClickListener = rowClickListener;
 
-    }
+    }*/
+
+
 
 
     @Override
@@ -58,15 +69,6 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.MyHolder> 
         holder.txtRouteName.setText(String.valueOf(routesSuccess.getRouteName()));
 
 
-        holder.rowClick.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-
-                rowClickListener.onClick(position,routesSuccess.getId());
-
-            }
-        });
     }
 
     @Override
@@ -77,7 +79,7 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.MyHolder> 
     public class MyHolder extends RecyclerView.ViewHolder {
 
         TextView txtId,txtRouteName;
-        LinearLayout rowClick;
+        RelativeLayout rowClick;
 
         public MyHolder(View itemView) {
             super(itemView);
