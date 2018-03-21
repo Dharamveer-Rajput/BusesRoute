@@ -23,6 +23,8 @@ public class AppConstants {
     public static final String DIS_OLD = "DIS_OLD";
     public static final String BUSINESS_ID = "BUSINESS_ID";
     public static final String ORDER_NO = "ORDER_NO";
+    public static final String PRE_LAT = "PRE_LAT";
+    public static final String PRE_LNG = "PRE_LNG";
 
 
     // Location updates intervals

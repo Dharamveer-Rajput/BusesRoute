@@ -39,6 +39,7 @@ import com.busesroute.adapters.StopsAdapter;
 import com.busesroute.response.StopsSuccess.StopsSuccess;
 import com.busesroute.response.routes.RoutesSuccess;
 import com.busesroute.service.LocationService;
+import com.busesroute.utils.SharedPrefer;
 import com.jaredrummler.android.colorpicker.ColorPickerDialog;
 import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
 
@@ -70,6 +71,8 @@ public class StopsActivity extends AppCompatActivity implements View.OnClickList
     NoInternetDialog noInternetDialog;
     private boolean mIsServiceStarted = false;
     private BroadcastReceiver mMessageReceiver;
+    SharedPrefer sharedPrefer;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +93,7 @@ public class StopsActivity extends AppCompatActivity implements View.OnClickList
 
         recyclerViewStops.setHasFixedSize(true);
 
+        sharedPrefer = new SharedPrefer(this);
 
         fabLocation = findViewById(R.id.fabLocation);
 
@@ -472,80 +476,103 @@ public class StopsActivity extends AppCompatActivity implements View.OnClickList
 
 */
 
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
 
 
-                            JSONObject jsonObject = new JSONObject();
-                            try {
-                                jsonObject.put("routeid", routeId);
-                                jsonObject.put("lat", lastKnownLoc.getLatitude());
-                                jsonObject.put("lng", lastKnownLoc.getLongitude());
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
+                  double pre_lat = Double.parseDouble(sharedPrefer.getPRE_LAT());
+                  double pre_lng = Double.parseDouble(sharedPrefer.getPRE_LNG());
+
+                    Location locationA = new Location("point A");
+
+                    locationA.setLatitude(pre_lat);
+                    locationA.setLongitude(pre_lng);
+
+                    Location locationB = new Location("point B");
+
+                    locationB.setLatitude(lastKnownLoc.getLatitude());
+                    locationB.setLongitude(lastKnownLoc.getLongitude());
+
+                    float distance = locationA.distanceTo(locationB);
 
 
-                            try {
-                                final Request request = Bridge
-                                        .post("http://18.217.234.39:8080/api/routeTrack")
-                                        .retries(5, 6000)
-                                        .body(jsonObject)
-                                        .request();
-                                request.response().asString();
+                    if (distance > 50) {
 
 
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
 
-                                Response response = request.response();
-                                if (response.isSuccess()) {
-                                    // Request returned HTTP status 200-300
 
-                                    String res = response.asString();
+                                JSONObject jsonObject = new JSONObject();
+                                try {
+                                    jsonObject.put("routeid", routeId);
+                                    jsonObject.put("lat", lastKnownLoc.getLatitude());
+                                    jsonObject.put("lng", lastKnownLoc.getLongitude());
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
 
-                                    JSONObject json = null;
-                                    try {
-                                        json = new JSONObject(res);
 
+                                try {
+                                    final Request request = Bridge
+                                            .post("http://18.217.234.39:8080/api/routeTrack")
+                                            .retries(5, 6000)
+                                            .body(jsonObject)
+                                            .request();
+                                    request.response().asString();
+
+
+                                    Response response = request.response();
+                                    if (response.isSuccess()) {
+                                        // Request returned HTTP status 200-300
+
+                                        String res = response.asString();
+
+                                        JSONObject json = null;
                                         try {
-                                            final String message = json.getString("message");
+                                            json = new JSONObject(res);
+
+                                            try {
+                                                final String message = json.getString("message");
 
 
-                                            runOnUiThread(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                   // Toast.makeText(StopsActivity.this,message,Toast.LENGTH_SHORT).show();
+                                                runOnUiThread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        // Toast.makeText(StopsActivity.this,message,Toast.LENGTH_SHORT).show();
 
-                                                }
-                                            });
 
+                                                        sharedPrefer.setPRE_LAT(String.valueOf(lastKnownLoc.getLatitude()));
+                                                        sharedPrefer.setPRE_LNG(String.valueOf(lastKnownLoc.getLongitude()));
+
+
+                                                    }
+                                                });
+
+
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                            }
 
                                         } catch (JSONException e) {
                                             e.printStackTrace();
                                         }
 
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
+
+                                    } else {
+                                        // Request returned an HTTP error status
                                     }
 
 
-
-                                } else {
-                                    // Request returned an HTTP error status
+                                } catch (BridgeException e) {
+                                    e.printStackTrace();
                                 }
-
-
-                            } catch (BridgeException e) {
-                                e.printStackTrace();
                             }
-                        }
-                    }).start();
+                        }).start();
 
 
+                    }
 
                 }
-
-
 
             }
         };
