@@ -28,6 +28,19 @@
             </intent-filter>
         </activity>
 
+
+        <service
+            android:name=".service.LocationService"
+            android:enabled="true"
+            android:stopWithTask="true"
+            android:exported="false">
+
+        </service>
+
+
+
+
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/googlemapskey" />

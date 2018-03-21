@@ -1,13 +1,16 @@
 package com.busesroute.activities;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,6 +18,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -22,15 +26,19 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.bridge.Bridge;
 import com.afollestad.bridge.BridgeException;
 import com.afollestad.bridge.Request;
 import com.afollestad.bridge.Response;
+import com.busesroute.AppConstants;
 import com.busesroute.R;
+import com.busesroute.SharedPrefsHelper;
 import com.busesroute.adapters.StopsAdapter;
 import com.busesroute.response.StopsSuccess.StopsSuccess;
 import com.busesroute.response.routes.RoutesSuccess;
+import com.busesroute.service.LocationService;
 import com.jaredrummler.android.colorpicker.ColorPickerDialog;
 import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
 
@@ -43,7 +51,7 @@ import java.util.ArrayList;
 import am.appwise.components.ni.NoInternetDialog;
 import pl.charmas.android.reactivelocation2.ReactiveLocationProvider;
 
-public class StopsActivity extends AppCompatActivity{
+public class StopsActivity extends AppCompatActivity implements View.OnClickListener {
 
 
     int routeId;
@@ -57,8 +65,11 @@ public class StopsActivity extends AppCompatActivity{
     public ArrayList<StopsSuccess> stopsSuccessArrayList;
     private StopsAdapter stopsAdapter;
     private FloatingActionButton fabStops;
+    private FloatingActionButton fabLocation;
     TextView toolbarTitle;
     NoInternetDialog noInternetDialog;
+    private boolean mIsServiceStarted = false;
+    private BroadcastReceiver mMessageReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +89,13 @@ public class StopsActivity extends AppCompatActivity{
         recyclerViewStops = findViewById(R.id.recyclerViewStops);
 
         recyclerViewStops.setHasFixedSize(true);
+
+
+        fabLocation = findViewById(R.id.fabLocation);
+
+
+        fabLocation.setOnClickListener(this);
+
 
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(StopsActivity.this);
@@ -135,6 +153,10 @@ public class StopsActivity extends AppCompatActivity{
                                 stopsSuccess = new StopsSuccess();
 
                                 stopsSuccess.setIdStopsToShow(i+1);
+                                SharedPrefsHelper sharedPrefsHelper = new SharedPrefsHelper();
+
+                              //  sharedPrefsHelper.put(AppConstants.ID,jsonObject.getInt("id"));
+                               // stopsSuccess.setId(jsonObject.getInt("id"));
                                 stopsSuccess.setIdStops(jsonObject1.getInt("stopid"));
                                 stopsSuccess.setStopsTitle(jsonObject1.getString("title"));
                                 stopsSuccess.setStopsLat(jsonObject1.getString("lat"));
@@ -229,7 +251,7 @@ public class StopsActivity extends AppCompatActivity{
                                                                                                         jsonObject.put("title",edNewStopName.getText().toString());
                                                                                                         jsonObject.put("lat",editStopLat);
                                                                                                         jsonObject.put("lng",editStopLong);
-                                                                                                       // jsonObject.put("colr",colorCode);
+                                                                                                        // jsonObject.put("colr",colorCode);
 
                                                                                                     } catch (JSONException e) {
                                                                                                         e.printStackTrace();
@@ -268,7 +290,7 @@ public class StopsActivity extends AppCompatActivity{
                                                                                                                             stopsSuccess.setStopsLng(String.valueOf(editStopLong));
                                                                                                                             stopsAdapter.notifyItemChanged(position);
 
-                                                                                                                        //    Toast.makeText(StopsActivity.this,message,Toast.LENGTH_LONG).show();
+                                                                                                                            //    Toast.makeText(StopsActivity.this,message,Toast.LENGTH_LONG).show();
 
                                                                                                                         }
                                                                                                                     });
@@ -369,7 +391,7 @@ public class StopsActivity extends AppCompatActivity{
                                                                                             stopsAdapter.notifyDataSetChanged();
 
 
-                                                                                           // Toast.makeText(StopsActivity.this,message,Toast.LENGTH_LONG).show();
+                                                                                            // Toast.makeText(StopsActivity.this,message,Toast.LENGTH_LONG).show();
 
 
 
@@ -430,6 +452,111 @@ public class StopsActivity extends AppCompatActivity{
                 }
             }
         }).start();
+
+
+
+        mMessageReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+
+
+                Bundle b = intent.getBundleExtra("Location");
+                final Location lastKnownLoc =  b.getParcelable("Location");
+
+
+                if (lastKnownLoc != null) {
+
+                    Toast.makeText(StopsActivity.this, "Latitude: =" + lastKnownLoc.getLatitude() + " Longitude:=" + lastKnownLoc.getLongitude(),
+                            Toast.LENGTH_SHORT).show();
+
+
+
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+
+
+                            JSONObject jsonObject = new JSONObject();
+                            try {
+                                jsonObject.put("routeid", routeId);
+                                jsonObject.put("lat", lastKnownLoc.getLatitude());
+                                jsonObject.put("lng", lastKnownLoc.getLongitude());
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+
+                            try {
+                                final Request request = Bridge
+                                        .post("http://18.217.234.39:8080/api/routeTrack")
+                                        .retries(5, 6000)
+                                        .body(jsonObject)
+                                        .request();
+                                request.response().asString();
+
+
+
+                                Response response = request.response();
+                                if (response.isSuccess()) {
+                                    // Request returned HTTP status 200-300
+
+                                    String res = response.asString();
+
+                                    JSONObject json = null;
+                                    try {
+                                        json = new JSONObject(res);
+
+                                        try {
+                                            final String message = json.getString("message");
+
+
+                                            runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    Toast.makeText(StopsActivity.this,message,Toast.LENGTH_SHORT).show();
+
+                                                }
+                                            });
+
+
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+
+
+
+                                } else {
+                                    // Request returned an HTTP error status
+                                }
+
+
+                            } catch (BridgeException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }).start();
+
+
+
+                }
+
+
+
+            }
+        };
+
+        LocalBroadcastManager.getInstance(StopsActivity.this).registerReceiver(mMessageReceiver, new IntentFilter("GPSLocationUpdates"));
+
+
+
+
+
+
 
 
         fabStops = findViewById(R.id.fabStops);
@@ -510,14 +637,34 @@ public class StopsActivity extends AppCompatActivity{
                                                                             public void run() {
 
 
-                                                                                StopsSuccess stopsSuccess=   new StopsSuccess();
-                                                                                stopsSuccess.setIdStopsToShow(stopsSuccessArrayList.size()+1);
-                                                                                stopsSuccess.setStopsTitle(etName.getText().toString());
+                                                                                String stoptitle =etName.getText().toString();
+
+
+                                                                                StopsSuccess stopsSuccess = new StopsSuccess();
+                                                                                stopsSuccess.setIdStopsToShow(stopsSuccessArrayList.size() + 1);
+                                                                                if (stoptitle.equals("")){
+
+                                                                                    int size = stopsSuccessArrayList.size();
+
+                                                                                    int siz = size + 1;
+
+                                                                                    stopsSuccess.setStopsTitle("Parada " + siz);
+                                                                                    //stopsSuccess.setStopsTitle(String.valueOf(stopsSuccess.getId()));
+
+
+                                                                                }
+                                                                                else {
+
+                                                                                    stopsSuccess.setStopsTitle(etName.getText().toString());
+
+                                                                                }
+
                                                                                 stopsSuccess.setStopsLat(String.valueOf(curLat));
                                                                                 stopsSuccess.setStopsLng(String.valueOf(curLong));
                                                                                 stopsSuccessArrayList.add(stopsSuccess);
-                                                                                stopsAdapter.notifyDataSetChanged();
 
+
+                                                                                stopsAdapter.notifyDataSetChanged();
 
                                                                             }
                                                                         });
@@ -549,7 +696,7 @@ public class StopsActivity extends AppCompatActivity{
 
 
 
-                             //   Toast.makeText(getApplicationContext(),etName.getText().toString(),Toast.LENGTH_SHORT).show();
+                                //   Toast.makeText(getApplicationContext(),etName.getText().toString(),Toast.LENGTH_SHORT).show();
 
 
 
@@ -565,6 +712,25 @@ public class StopsActivity extends AppCompatActivity{
         });
     }
 
+    @Override
+    public void onClick(View v) {
+
+        if(v==fabLocation){
+
+            fabStops.setVisibility(View.VISIBLE);
+
+            if (!mIsServiceStarted)
+            {
+                mIsServiceStarted = true;
+                startService(new Intent(this, LocationService.class));
+
+
+
+            }
+        }
+
+
+    }
 
 
 

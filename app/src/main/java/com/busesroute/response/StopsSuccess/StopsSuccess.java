@@ -10,6 +10,15 @@ public class StopsSuccess {
 
 
     private int idStops;
+    private int id;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public int getIdStopsToShow() {
         return idStopsToShow;

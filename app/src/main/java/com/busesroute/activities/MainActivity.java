@@ -1,11 +1,16 @@
 package com.busesroute.activities;
 
+import android.Manifest;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
+import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,6 +28,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.bridge.Bridge;
 import com.afollestad.bridge.BridgeException;
@@ -31,6 +37,7 @@ import com.afollestad.bridge.Response;
 import com.busesroute.R;
 import com.busesroute.adapters.RoutesAdapter;
 import com.busesroute.response.routes.RoutesSuccess;
+import com.busesroute.service.LocationService;
 import com.jaredrummler.android.colorpicker.ColorPickerDialog;
 import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
 
@@ -142,7 +149,6 @@ public class MainActivity extends AppCompatActivity  implements ColorPickerDialo
         toolbarTitle = findViewById(R.id.toolbar_title);
         txtwebViewActivity = findViewById(R.id.txtwebViewActivity);
 
-
         toolbarTitle.setText("Routes");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -174,6 +180,11 @@ public class MainActivity extends AppCompatActivity  implements ColorPickerDialo
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new com.busesroute.utils.DividerItemDecoration(this));
+
+
+
+
+
 
         new Thread(new Runnable() {
             @Override
@@ -615,6 +626,8 @@ public class MainActivity extends AppCompatActivity  implements ColorPickerDialo
 
     }
 
+
+
     public static interface ClickListener{
         public void onClick(View view,int position);
         public void onLongClick(View view,int position);
@@ -670,8 +683,12 @@ public class MainActivity extends AppCompatActivity  implements ColorPickerDialo
 
 
 
-    @NeedsPermission({android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION})
+    @NeedsPermission({Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION})
     void onCheckPermission() {
+
+
+
+
     }
 
     @Override
@@ -680,15 +697,15 @@ public class MainActivity extends AppCompatActivity  implements ColorPickerDialo
         MainActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
-    @OnShowRationale({android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION})
+    @OnShowRationale({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
     void onShowRationale(final PermissionRequest request) {
     }
 
-    @OnPermissionDenied({android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION})
+    @OnPermissionDenied({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
     void onPermissionDenied() {
     }
 
-    @OnNeverAskAgain({android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION})
+    @OnNeverAskAgain({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
     void onNverAskAgain() {
     }
 
