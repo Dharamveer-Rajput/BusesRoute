@@ -79,6 +79,8 @@ public class MainActivity extends AppCompatActivity  implements ColorPickerDialo
     private boolean isEdtabDialog = false;
 
 
+
+
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
@@ -139,6 +141,8 @@ public class MainActivity extends AppCompatActivity  implements ColorPickerDialo
 
         //checkLocationPermission();
        noInternetDialog = new NoInternetDialog.Builder(this).build();
+
+
 
 
         routesSuccessArrayList = new ArrayList<>();
@@ -678,8 +682,6 @@ public class MainActivity extends AppCompatActivity  implements ColorPickerDialo
 
         }
     }
-
-
 
 
 

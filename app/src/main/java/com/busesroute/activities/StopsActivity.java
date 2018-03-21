@@ -467,10 +467,10 @@ public class StopsActivity extends AppCompatActivity implements View.OnClickList
 
                 if (lastKnownLoc != null) {
 
-                    Toast.makeText(StopsActivity.this, "Latitude: =" + lastKnownLoc.getLatitude() + " Longitude:=" + lastKnownLoc.getLongitude(),
+                  /*  Toast.makeText(StopsActivity.this, "Latitude: =" + lastKnownLoc.getLatitude() + " Longitude:=" + lastKnownLoc.getLongitude(),
                             Toast.LENGTH_SHORT).show();
 
-
+*/
 
                     new Thread(new Runnable() {
                         @Override
@@ -514,7 +514,7 @@ public class StopsActivity extends AppCompatActivity implements View.OnClickList
                                             runOnUiThread(new Runnable() {
                                                 @Override
                                                 public void run() {
-                                                    Toast.makeText(StopsActivity.this,message,Toast.LENGTH_SHORT).show();
+                                                   // Toast.makeText(StopsActivity.this,message,Toast.LENGTH_SHORT).show();
 
                                                 }
                                             });
@@ -712,6 +712,15 @@ public class StopsActivity extends AppCompatActivity implements View.OnClickList
         });
     }
 
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        stopService(new Intent(this, LocationService.class));
+
+    }
+
     @Override
     public void onClick(View v) {
 
@@ -793,5 +802,6 @@ public class StopsActivity extends AppCompatActivity implements View.OnClickList
     protected void onDestroy() {
         super.onDestroy();
         noInternetDialog.onDestroy();
+
     }
 }
